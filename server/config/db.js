@@ -7,7 +7,8 @@ const connectDB = async () => {
 
   try {
     const uri = (process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/perfume-vault')
-      .replace('mongodb://localhost', 'mongodb://127.0.0.1'); // Force IPv4 on Windows
+      .replace('mongodb://localhost', 'mongodb://127.0.0.1') // Force IPv4 on Windows
+      .replace('mongodb.net/?appName', 'mongodb.net/perfume-vault?appName'); // inject DB name if missing
 
     const conn = await mongoose.connect(uri, {
       serverSelectionTimeoutMS: 10000,
