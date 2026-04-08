@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Environment variables — NEVER commit these
+.env
+admin.env
+
+# Build outputs
+dist/
+build/
+
+# Uploaded files
+client/images/products/
+
+# Editor
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Runtime
+.npm

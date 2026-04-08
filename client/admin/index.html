@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — The Perfume Vault</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:wght@300;400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root{--gold:#c9a84c;--gold-light:#e8cc7a;--gold-dark:#8a6a1f;--bg:#060606;--bg-2:#0c0c0c;--bg-3:#111;--bg-card:#0f0f0f;--text:#f0ece4;--text-muted:#888;--text-dim:#444;--border:rgba(201,168,76,0.15);--border-hover:rgba(201,168,76,0.4);--danger:#e05555;--success:#55e09e;--font-display:'Cinzel',serif;--font-serif:'Cormorant Garamond',serif;--font-sans:'Montserrat',sans-serif}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:var(--font-sans);font-weight:300;min-height:100vh}
+    ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg-2)}::-webkit-scrollbar-thumb{background:var(--gold-dark)}
+    button{cursor:pointer;border:none;background:none;font-family:inherit}input,select,textarea{font-family:inherit}
+
+    #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(201,168,76,0.06) 0%,transparent 70%),var(--bg)}
+    .login-box{width:100%;max-width:400px;padding:3rem;background:var(--bg-2);border:1px solid var(--border)}
+    .login-logo{text-align:center;margin-bottom:2.5rem}
+    .login-logo i{font-size:2.5rem;color:var(--gold);display:block;margin-bottom:0.5rem}
+    .login-logo h1{font-family:var(--font-display);font-size:1rem;letter-spacing:0.25em;color:var(--gold-light)}
+    .login-logo p{font-size:0.72rem;color:var(--text-muted);letter-spacing:0.1em;margin-top:0.3rem}
+    .fg{margin-bottom:1rem}
+    .fg label{display:block;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.4rem}
+    .fg input{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);padding:0.7rem 0.8rem;font-size:0.85rem;transition:0.2s}
+    .fg input:focus{outline:none;border-color:var(--border-hover)}
+    .btn-login{width:100%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:#000;font-family:var(--font-sans);font-size:0.72rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;padding:0.85rem;border:none;margin-top:0.5rem;transition:0.2s}
+    .btn-login:hover{filter:brightness(1.1)}
+    .login-error{font-size:0.75rem;color:var(--danger);margin-top:0.5rem;display:none}
+
+    #admin-app{display:none;min-height:100vh}
+    .admin-layout{display:flex}
+    .sidebar{width:240px;min-height:100vh;flex-shrink:0;background:var(--bg-2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+    .sidebar-logo{padding:1.5rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.6rem}
+    .sidebar-logo i{color:var(--gold);font-size:1.1rem}
+    .sidebar-logo span{font-family:var(--font-display);font-size:0.65rem;letter-spacing:0.15em;color:var(--gold-light)}
+    .sidebar-nav{flex:1;padding:1rem 0;overflow-y:auto}
+    .nav-item{display:flex;align-items:center;gap:0.7rem;padding:0.75rem 1.2rem;font-size:0.72rem;letter-spacing:0.08em;color:var(--text-muted);transition:0.2s;cursor:pointer;border-left:2px solid transparent}
+    .nav-item i{width:16px;text-align:center;font-size:0.85rem}
+    .nav-item:hover{color:var(--text);background:rgba(201,168,76,0.04)}
+    .nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(201,168,76,0.06)}
+    .sidebar-user{padding:1rem 1.2rem;border-top:1px solid var(--border);font-size:0.72rem;color:var(--text-muted)}
+    .sidebar-user strong{display:block;color:var(--text);margin-bottom:0.2rem;font-size:0.78rem}
+    .sidebar-user button{color:var(--danger);font-size:0.68rem;letter-spacing:0.08em;margin-top:0.5rem}
+
+    .admin-main{flex:1;min-height:100vh;overflow-x:hidden}
+    .admin-header{padding:1.2rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg-2);position:sticky;top:0;z-index:100}
+    .admin-header h2{font-family:var(--font-serif);font-size:1.5rem;font-weight:300}
+    .content-area{padding:2rem}
+
+    .section{display:none}.section.active{display:block}
+
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+    .stat-card{background:var(--bg-card);border:1px solid var(--border);padding:1.5rem;position:relative;overflow:hidden;transition:0.2s}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+    .stat-card:hover{border-color:var(--border-hover)}
+    .stat-card i{font-size:1.4rem;color:var(--gold);margin-bottom:0.8rem;display:block;opacity:0.7}
+    .stat-card .sv{font-family:var(--font-serif);font-size:2rem;font-weight:300;color:var(--text);line-height:1;margin-bottom:0.3rem}
+    .stat-card .sl{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text-dim)}
+    .stat-card .ss{font-size:0.72rem;color:var(--gold);margin-top:0.3rem}
+
+    .table-wrap{background:var(--bg-card);border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem}
+    .table-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .table-header h3{font-family:var(--font-serif);font-size:1.1rem;font-weight:300}
+    table{width:100%;border-collapse:collapse}
+    th{padding:0.7rem 1rem;text-align:left;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:400}
+    td{padding:0.8rem 1rem;font-size:0.8rem;color:var(--text-muted);border-bottom:1px solid rgba(201,168,76,0.05);vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:rgba(201,168,76,0.02)}
+    .td-name{color:var(--text);font-weight:400}
+    .td-img{width:40px;height:48px;object-fit:cover;border:1px solid var(--border)}
+
+    .badge{display:inline-block;padding:0.15rem 0.5rem;font-size:0.62rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase}
+    .b-confirmed,.b-paid,.b-delivered{background:rgba(85,224,158,0.15);color:var(--success)}
+    .b-pending{background:rgba(201,168,76,0.15);color:var(--gold)}
+    .b-cancelled,.b-failed{background:rgba(224,85,85,0.15);color:var(--danger)}
+    .b-processing,.b-shipped{background:rgba(85,120,224,0.15);color:#6688ff}
+
+    .btn-a{padding:0.3rem 0.7rem;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--border);color:var(--text-muted);transition:0.2s;display:inline-flex;align-items:center;gap:0.3rem}
+    .btn-a:hover{color:var(--gold);border-color:var(--border-hover)}
+    .btn-a.d:hover{color:var(--danger);border-color:rgba(224,85,85,0.4)}
+    .btn-a.p{background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:#000;border:none;font-weight:600}
+    .btn-a.p:hover{filter:brightness(1.1)}
+
+    .product-form{background:var(--bg-card);border:1px solid var(--border);padding:2rem}
+    .product-form h3{font-family:var(--font-serif);font-size:1.3rem;font-weight:300;margin-bottom:1.5rem;color:var(--text-muted)}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .fga{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1rem}
+    .fga label{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-dim)}
+    .fga input,.fga select,.fga textarea{background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);padding:0.65rem 0.8rem;font-size:0.82rem;transition:0.2s;width:100%}
+    .fga input:focus,.fga select:focus,.fga textarea:focus{outline:none;border-color:var(--border-hover)}
+    .fga textarea{min-height:100px;resize:vertical}
+    .fga select option{background:var(--bg-3)}
+    .form-full{grid-column:1/-1}
+
+    .upload-zone{border:2px dashed var(--border);padding:2rem;text-align:center;cursor:pointer;transition:0.2s}
+    .upload-zone:hover{border-color:var(--border-hover);background:rgba(201,168,76,0.02)}
+    .upload-zone i{font-size:2rem;color:var(--text-dim);display:block;margin-bottom:0.5rem}
+    .upload-zone p{font-size:0.78rem;color:var(--text-muted)}
+    .img-preview-grid{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.8rem}
+    .img-preview{position:relative}
+    .img-preview img{width:70px;height:80px;object-fit:cover;border:1px solid var(--border)}
+    .img-preview button{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:var(--danger);color:#fff;font-size:0.55rem;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+    .dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    .loader-sm{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .ta-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:0.5rem}
+    .ta-item{padding:0.8rem 1.2rem;background:var(--bg-3);border:1px solid var(--border);font-size:0.78rem;animation:toastIn 0.3s ease;display:flex;align-items:center;gap:0.6rem}
+    .ta-item.s{border-left:3px solid var(--success)}.ta-item.e{border-left:3px solid var(--danger)}.ta-item.i{border-left:3px solid var(--gold)}
+    @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+    @media(max-width:600px){.sidebar{display:none}.form-grid{grid-template-columns:1fr}.dashboard-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <i class="fas fa-vault"></i>
+      <h1>THE PERFUME VAULT</h1>
+      <p>Admin Access Only</p>
+    </div>
+    <div class="fg"><label>Email</label><input type="email" id="admin-email" placeholder="admin@example.com" onkeydown="if(event.key==='Enter')adminLogin()" /></div>
+    <div class="fg"><label>Password</label><input type="password" id="admin-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()" /></div>
+    <button class="btn-login" onclick="adminLogin()" id="login-btn">Access Vault Admin</button>
+    <p class="login-error" id="login-error"></p>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="admin-app">
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo"><i class="fas fa-vault"></i><span>VAULT ADMIN</span></div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active" onclick="showSection('dashboard')" id="nav-dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
+        <div class="nav-item" onclick="showSection('products')" id="nav-products"><i class="fas fa-spray-can"></i> Products</div>
+        <div class="nav-item" onclick="showSection('add-product')" id="nav-add-product"><i class="fas fa-plus-circle"></i> Add Product</div>
+        <div class="nav-item" onclick="showSection('orders')" id="nav-orders"><i class="fas fa-box"></i> Orders</div>
+        <div class="nav-item" onclick="showSection('users')" id="nav-users"><i class="fas fa-users"></i> Users</div>
+        <div class="nav-item" onclick="window.open('/','_blank')"><i class="fas fa-external-link-alt"></i> View Store</div>
+      </nav>
+      <div class="sidebar-user">
+        <strong id="admin-name-display">Admin</strong>
+        <span id="admin-email-display"></span><br/>
+        <button onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-header">
+        <h2 id="section-title">Dashboard</h2>
+        <div id="header-actions"></div>
+      </div>
+      <div class="content-area">
+
+        <!-- DASHBOARD -->
+        <div class="section active" id="section-dashboard">
+          <div class="stats-grid" id="stats-grid"><div class="stat-card" style="grid-column:1/-1;padding:3rem"><div class="loader-sm"></div></div></div>
+          <div class="dashboard-grid">
+            <div class="table-wrap">
+              <div class="table-header"><h3>Recent Orders</h3></div>
+              <table><thead><tr><th>Order #</th><th>Total</th><th>Status</th></tr></thead><tbody id="recent-orders-table"></tbody></table>
+            </div>
+            <div class="table-wrap">
+              <div class="table-header"><h3>Top Products</h3></div>
+              <table><thead><tr><th>Product</th><th>Sold</th><th>Revenue</th></tr></thead><tbody id="top-products-table"></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRODUCTS -->
+        <div class="section" id="section-products">
+          <div class="table-wrap">
+            <div class="table-header"><h3>All Products</h3><button class="btn-a p" onclick="showSection('add-product')"><i class="fas fa-plus"></i> Add New</button></div>
+            <table><thead><tr><th></th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Sold</th><th>Actions</th></tr></thead><tbody id="products-table"></tbody></table>
+          </div>
+        </div>
+
+        <!-- ADD/EDIT PRODUCT -->
+        <div class="section" id="section-add-product">
+          <div class="product-form">
+            <h3 id="product-form-title">Add New Product</h3>
+            <input type="hidden" id="edit-product-id" />
+            <div class="form-grid">
+              <div class="fga"><label>Name *</label><input type="text" id="p-name" placeholder="Midnight Essence" /></div>
+              <div class="fga"><label>Category *</label><select id="p-category"><option value="">Select...</option><option value="Men">Men</option><option value="Women">Women</option><option value="Luxury">Luxury</option></select></div>
+              <div class="fga"><label>Price ($) *</label><input type="number" id="p-price" placeholder="120.00" min="0" step="0.01" /></div>
+              <div class="fga"><label>Compare Price ($)</label><input type="number" id="p-compare-price" placeholder="160.00" min="0" step="0.01" /></div>
+              <div class="fga"><label>Stock *</label><input type="number" id="p-stock" placeholder="50" min="0" /></div>
+              <div class="fga"><label>Size</label><input type="text" id="p-size" placeholder="100ml EDP" /></div>
+              <div class="fga"><label>Brand</label><input type="text" id="p-brand" placeholder="The Perfume Vault" /></div>
+              <div class="fga"><label>Featured</label><select id="p-featured"><option value="false">No</option><option value="true">Yes</option></select></div>
+              <div class="fga form-full"><label>Short Description</label><input type="text" id="p-short-desc" placeholder="One-line tagline..." /></div>
+              <div class="fga form-full"><label>Full Description *</label><textarea id="p-description" placeholder="Full product description..."></textarea></div>
+              <div class="fga"><label>Top Notes (comma-separated)</label><input type="text" id="p-top-notes" placeholder="Bergamot, Pepper" /></div>
+              <div class="fga"><label>Middle Notes</label><input type="text" id="p-mid-notes" placeholder="Rose, Oud" /></div>
+              <div class="fga form-full"><label>Base Notes</label><input type="text" id="p-base-notes" placeholder="Musk, Sandalwood" /></div>
+              <div class="fga"><label>Tags</label><input type="text" id="p-tags" placeholder="luxury, oriental" /></div>
+              <div class="fga"><label>Image URLs (comma-separated)</label><input type="text" id="p-image-urls" placeholder="https://..." /></div>
+              <div class="fga form-full">
+                <label>Upload Image</label>
+                <div class="upload-zone" onclick="document.getElementById('img-file-input').click()">
+                  <i class="fas fa-cloud-upload-alt"></i><p>Click to upload (max 5MB)</p>
+                </div>
+                <input type="file" id="img-file-input" accept="image/*" multiple style="display:none" onchange="handleImageUpload(this)" />
+                <div class="img-preview-grid" id="img-preview-grid"></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.8rem;margin-top:1rem">
+              <button class="btn-a p" onclick="saveProduct()" id="save-product-btn"><i class="fas fa-save"></i> Save Product</button>
+              <button class="btn-a" onclick="resetProductForm()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ORDERS -->
+        <div class="section" id="section-orders">
+          <div class="table-wrap">
+            <div class="table-header">
+              <h3>All Orders</h3>
+              <select onchange="loadOrders(this.value)" style="background:var(--bg-3);border:1px solid var(--border);color:var(--text-muted);padding:0.3rem 0.6rem;font-size:0.72rem">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option><option value="confirmed">Confirmed</option>
+                <option value="processing">Processing</option><option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option><option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+            <table><thead><tr><th>Order #</th><th>Customer</th><th>Date</th><th>Total</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead><tbody id="orders-table"></tbody></table>
+          </div>
+        </div>
+
+        <!-- USERS -->
+        <div class="section" id="section-users">
+          <div class="table-wrap">
+            <div class="table-header"><h3>Registered Users</h3></div>
+            <table><thead><tr><th>Name</th><th>Email</th><th>Joined</th><th>Admin</th><th>Actions</th></tr></thead><tbody id="users-table"></tbody></table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="ta-container" id="admin-toast"></div>
+<script src="/js/admin.js"></script>
+</body>
+</html>
