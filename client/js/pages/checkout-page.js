@@ -89,10 +89,6 @@ function renderCheckoutPage() {
     '<div class="form-group"><label>CVV / CVC</label><input type="password" id="card-cvv" placeholder="•••" maxlength="4" autocomplete="cc-csc" /></div>' +
     '</div>' +
     '<div class="form-group"><label>Name on Card</label><input type="text" id="card-name" placeholder="Ali Khan" autocomplete="cc-name" /></div>' +
-    '<div class="form-group">' +
-    '<label>CNIC <span style="font-size:0.7rem;color:var(--text-dim)">(for identity verification)</span></label>' +
-    '<input type="text" id="card-cnic" placeholder="12345-1234567-1" maxlength="15" oninput="formatCNIC(this)" />' +
-    '</div>' +
     '</div>' +
 
     '<div class="checkout-nav" style="margin-top:1.5rem">' +

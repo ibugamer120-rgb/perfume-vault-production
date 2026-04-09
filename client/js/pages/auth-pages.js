@@ -27,6 +27,8 @@ function renderLogin() {
         </div>
         <button class="btn-primary full-width" onclick="handleLogin()" id="login-btn">Sign In to Vault</button>
         <div class="auth-divider"><span>or</span></div>
+        <button class="btn-google full-width" onclick="triggerGoogleSignIn()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" alt="G" /> Continue with Google</button>
+        <div class="auth-divider"><span>or</span></div>
         <button class="btn-ghost full-width" onclick="handleGuestMode()"><i class="fas fa-user-secret"></i> Continue as Guest</button>
         <p class="auth-switch">Don't have an account? <a onclick="Router.navigate('/register')">Create one</a></p>
       </div>
@@ -72,6 +74,8 @@ function renderRegister() {
           <div class="password-strength" id="pwd-strength"></div>
         </div>
         <button class="btn-primary full-width" onclick="handleRegister()" id="register-btn">Create Account</button>
+        <div class="auth-divider"><span>or</span></div>
+        <button class="btn-google full-width" onclick="triggerGoogleSignIn()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" alt="G" /> Continue with Google</button>
         <p class="auth-switch">Already have an account? <a onclick="Router.navigate('/login')">Sign in</a></p>
       </div>
     </div>

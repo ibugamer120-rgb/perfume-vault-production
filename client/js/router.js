@@ -30,25 +30,28 @@ const Router = (() => {
     // Scroll to top
     window.scrollTo(0, 0);
 
+    // Strip query string for route matching
+    const cleanPath = path.split('?')[0];
+
     // Dynamic routes — /product/:id
     const dynamicPatterns = [
       { regex: /^\/product\/([^/]+)$/, handler: (m) => routes['/product/:id']?.(m[1]) },
     ];
 
     for (const p of dynamicPatterns) {
-      const m = path.match(p.regex);
+      const m = cleanPath.match(p.regex);
       if (m) { p.handler(m); return; }
     }
 
     // Exact routes
-    if (routes[path]) {
-      routes[path]();
+    if (routes[cleanPath]) {
+      routes[cleanPath]();
     } else {
       routes['/404']?.() || render404();
     }
 
     // Update nav active state
-    updateNavActive(path);
+    updateNavActive(cleanPath);
   }
 
   function updateNavActive(path) {

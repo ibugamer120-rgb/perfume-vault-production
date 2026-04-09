@@ -174,7 +174,6 @@ function validateCardDetails() {
   const expiry = document.getElementById('card-expiry')?.value || '';
   const cvv = document.getElementById('card-cvv')?.value || '';
   const name = (document.getElementById('card-name')?.value || '').trim();
-  const cnic = (document.getElementById('card-cnic')?.value || '').trim();
 
   if (num.length < 13 || num.length > 16) {
     showToast('<i class="fas fa-exclamation-triangle"></i> <span>Enter a valid card number</span>', 'error'); return false;
@@ -197,9 +196,6 @@ function validateCardDetails() {
   }
   if (!name) {
     showToast('<i class="fas fa-exclamation-triangle"></i> <span>Name on card required</span>', 'error'); return false;
-  }
-  if (!cnic || !/^\d{5}-\d{7}-\d$/.test(cnic)) {
-    showToast('<i class="fas fa-exclamation-triangle"></i> <span>Enter valid CNIC (e.g. 12345-1234567-1)</span>', 'error'); return false;
   }
   return true;
 }
@@ -382,6 +378,11 @@ Router.define('/checkout', renderCheckoutPage);
 Router.define('/login', renderLogin);
 Router.define('/register', renderRegister);
 Router.define('/orders', renderOrders);
+Router.define('/about', renderAbout);
+Router.define('/shipping', renderShipping);
+Router.define('/authenticity', renderAuthenticity);
+Router.define('/contact', renderContact);
+Router.define('/faq', renderFAQ);
 Router.define('/admin', () => { window.location.href = '/admin/'; });
 
 Router.define('/404', () => {

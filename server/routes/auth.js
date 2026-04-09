@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const {
-  register, login, guestLogin, getMe,
+  register, login, guestLogin, googleAuth, googleRedirect, googleCallback, getMe,
   checkEmail, checkUsername,
   validateRegister, validateLogin,
 } = require('../controllers/authController');
@@ -19,6 +19,9 @@ const authLimiter = rateLimit({
 router.post('/register', authLimiter, validateRegister, register);
 router.post('/login', authLimiter, validateLogin, login);
 router.post('/guest', guestLogin);
+router.post('/google', authLimiter, googleAuth);
+router.get('/google/redirect', googleRedirect);
+router.get('/google/callback', googleCallback);
 router.get('/me', protect, getMe);
 router.get('/check-email', checkEmail);
 router.get('/check-username', checkUsername);

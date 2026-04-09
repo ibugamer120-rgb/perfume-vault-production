@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- SEO Meta Tags -->
   <title>The Perfume Vault — Rare Fragrances, Unlocked</title>
-  <meta name="description" content="Discover the world's most exclusive fragrances. The Perfume Vault curates rare, luxury perfumes for those who demand the extraordinary." />
-  <meta name="keywords" content="luxury perfume, rare fragrance, oud, perfume vault, exclusive scents, men perfume, women perfume" />
+  <meta name="description"
+    content="Discover the world's most exclusive fragrances. The Perfume Vault curates rare, luxury perfumes for those who demand the extraordinary." />
+  <meta name="keywords"
+    content="luxury perfume, rare fragrance, oud, perfume vault, exclusive scents, men perfume, women perfume" />
   <meta name="author" content="The Perfume Vault" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://theperfumevault.com" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="The Perfume Vault — Rare Fragrances, Unlocked" />
-  <meta property="og:description" content="Discover the world's most exclusive fragrances. Curated luxury perfumes for those who demand the extraordinary." />
+  <meta property="og:description"
+    content="Discover the world's most exclusive fragrances. Curated luxury perfumes for those who demand the extraordinary." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://images.unsplash.com/photo-1541643600914-78b084683702?w=1200&q=80" />
   <meta property="og:url" content="https://theperfumevault.com" />
@@ -28,7 +32,9 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Cinzel:wght@400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Cinzel:wght@400;500&display=swap"
+    rel="stylesheet" />
 
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -41,205 +47,243 @@
   <!-- Styles -->
   <link rel="stylesheet" href="/css/style.css" />
 </head>
+
 <body>
 
-<!-- ── INTRO ──────────────────────────────────────────────────── -->
-<div id="intro-overlay">
-  <canvas id="intro-canvas"></canvas>
-  <div id="intro-logo">
-    <div class="intro-vault-icon"><i class="fas fa-vault"></i></div>
-    <h1 class="intro-title">THE PERFUME VAULT</h1>
-    <p class="intro-tagline">Rare Fragrances, Unlocked</p>
-    <div class="intro-bar"><div class="intro-bar-fill"></div></div>
+  <!-- ── INTRO ──────────────────────────────────────────────────── -->
+  <div id="intro-overlay">
+    <canvas id="intro-canvas"></canvas>
+    <div id="intro-logo">
+      <div class="intro-vault-icon"><i class="fas fa-vault"></i></div>
+      <h1 class="intro-title">THE PERFUME VAULT</h1>
+      <p class="intro-tagline">Rare Fragrances, Unlocked</p>
+      <div class="intro-bar">
+        <div class="intro-bar-fill"></div>
+      </div>
+    </div>
+    <button id="skip-intro" onclick="skipIntro()">Skip <i class="fas fa-forward"></i></button>
   </div>
-  <button id="skip-intro" onclick="skipIntro()">Skip <i class="fas fa-forward"></i></button>
-</div>
 
-<!-- ── NAV ───────────────────────────────────────────────────── -->
-<nav id="navbar">
-  <div class="nav-inner">
-    <a class="nav-logo" data-route="/"><i class="fas fa-vault"></i><span>THE PERFUME VAULT</span></a>
+  <!-- ── NAV ───────────────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" data-route="/"><i class="fas fa-vault"></i><span>THE PERFUME VAULT</span></a>
 
-    <ul class="nav-links">
-      <li><a class="nav-link" data-route="/">Home</a></li>
-      <li><a class="nav-link" data-route="/shop">Shop</a></li>
-      <li class="nav-dropdown">
-        <a class="nav-link">Categories <i class="fas fa-chevron-down fa-xs"></i></a>
-        <ul class="dropdown-menu">
-          <li><a onclick="Router.navigate('/shop?category=Men')"><i class="fas fa-mars"></i> Men</a></li>
-          <li><a onclick="Router.navigate('/shop?category=Women')"><i class="fas fa-venus"></i> Women</a></li>
-          <li><a onclick="Router.navigate('/shop?category=Luxury')"><i class="fas fa-crown"></i> Luxury</a></li>
+      <ul class="nav-links">
+        <li><a class="nav-link" data-route="/">Home</a></li>
+        <li><a class="nav-link" data-route="/shop">Shop</a></li>
+        <li class="nav-dropdown">
+          <a class="nav-link">Categories <i class="fas fa-chevron-down fa-xs"></i></a>
+          <ul class="dropdown-menu">
+            <li><a onclick="Router.navigate('/shop?category=Men')"><i class="fas fa-mars"></i> Men</a></li>
+            <li><a onclick="Router.navigate('/shop?category=Women')"><i class="fas fa-venus"></i> Women</a></li>
+            <li><a onclick="Router.navigate('/shop?category=Luxury')"><i class="fas fa-crown"></i> Luxury</a></li>
+          </ul>
+        </li>
+        <li><a class="nav-link" onclick="Router.navigate('/about')">About</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="search-wrapper" id="nav-search-wrap">
+          <input type="text" id="nav-search" placeholder="Search..." oninput="navSearch(this.value)"
+            onkeydown="if(event.key==='Enter')Router.navigate('/shop?search='+this.value)" />
+          <i class="fas fa-search" onclick="Router.navigate('/shop')"></i>
+        </div>
+        <button class="nav-btn" onclick="toggleAuthModal()" id="auth-btn" title="Account">
+          <i class="fas fa-user"></i><span id="nav-user-name" class="nav-username">Sign In</span>
+        </button>
+        <button class="nav-btn" data-route="/cart" title="Cart" style="position:relative">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-badge" id="cart-count">0</span>
+        </button>
+      </div>
+
+      <button class="nav-hamburger" onclick="toggleMobileMenu()" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div id="mobile-menu" class="mobile-menu">
+      <a data-route="/" onclick="closeMobileMenu()">Home</a>
+      <a data-route="/shop" onclick="closeMobileMenu()">Shop All</a>
+      <a onclick="Router.navigate('/shop?category=Men');closeMobileMenu()">Men</a>
+      <a onclick="Router.navigate('/shop?category=Women');closeMobileMenu()">Women</a>
+      <a onclick="Router.navigate('/shop?category=Luxury');closeMobileMenu()">Luxury</a>
+      <a data-route="/cart" onclick="closeMobileMenu()">Cart (<span id="mobile-cart-count">0</span>)</a>
+      <a data-route="/orders" onclick="closeMobileMenu()">My Orders</a>
+      <a id="mobile-auth-link" onclick="toggleAuthModal();closeMobileMenu()">Sign In</a>
+    </div>
+  </nav>
+
+  <!-- ── APP CONTENT (Router renders here) ─────────────────────── -->
+  <main id="app-content" style="min-height:80vh;padding-top:70px">
+    <div style="display:flex;align-items:center;justify-content:center;height:80vh">
+      <div class="loader-ring"></div>
+    </div>
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────── -->
+  <footer class="footer" id="main-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo"><i class="fas fa-vault"></i> THE PERFUME VAULT</div>
+        <p>Curating the world's most extraordinary fragrances for those who understand that scent is the ultimate
+          luxury.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Collections</h4>
+        <ul>
+          <li><a data-route="/shop">All Fragrances</a></li>
+          <li><a onclick="Router.navigate('/shop?category=Men')">Men's Collection</a></li>
+          <li><a onclick="Router.navigate('/shop?category=Women')">Women's Collection</a></li>
+          <li><a onclick="Router.navigate('/shop?category=Luxury')">Luxury Exclusives</a></li>
         </ul>
-      </li>
-      <li><a class="nav-link" onclick="document.getElementById('about-section')?.scrollIntoView({behavior:'smooth'})">About</a></li>
-    </ul>
-
-    <div class="nav-actions">
-      <div class="search-wrapper" id="nav-search-wrap">
-        <input type="text" id="nav-search" placeholder="Search..." oninput="navSearch(this.value)" onkeydown="if(event.key==='Enter')Router.navigate('/shop?search='+this.value)" />
-        <i class="fas fa-search" onclick="Router.navigate('/shop')"></i>
       </div>
-      <button class="nav-btn" onclick="toggleAuthModal()" id="auth-btn" title="Account">
-        <i class="fas fa-user"></i><span id="nav-user-name" class="nav-username">Sign In</span>
-      </button>
-      <button class="nav-btn" data-route="/cart" title="Cart" style="position:relative">
-        <i class="fas fa-shopping-bag"></i>
-        <span class="cart-badge" id="cart-count">0</span>
-      </button>
-    </div>
-
-    <button class="nav-hamburger" onclick="toggleMobileMenu()" id="hamburger">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-
-  <div id="mobile-menu" class="mobile-menu">
-    <a data-route="/" onclick="closeMobileMenu()">Home</a>
-    <a data-route="/shop" onclick="closeMobileMenu()">Shop All</a>
-    <a onclick="Router.navigate('/shop?category=Men');closeMobileMenu()">Men</a>
-    <a onclick="Router.navigate('/shop?category=Women');closeMobileMenu()">Women</a>
-    <a onclick="Router.navigate('/shop?category=Luxury');closeMobileMenu()">Luxury</a>
-    <a data-route="/cart" onclick="closeMobileMenu()">Cart (<span id="mobile-cart-count">0</span>)</a>
-    <a data-route="/orders" onclick="closeMobileMenu()">My Orders</a>
-    <a id="mobile-auth-link" onclick="toggleAuthModal();closeMobileMenu()">Sign In</a>
-  </div>
-</nav>
-
-<!-- ── APP CONTENT (Router renders here) ─────────────────────── -->
-<main id="app-content" style="min-height:80vh;padding-top:70px">
-  <div style="display:flex;align-items:center;justify-content:center;height:80vh">
-    <div class="loader-ring"></div>
-  </div>
-</main>
-
-<!-- ── FOOTER ─────────────────────────────────────────────────── -->
-<footer class="footer" id="main-footer">
-  <div class="footer-grid">
-    <div class="footer-brand">
-      <div class="footer-logo"><i class="fas fa-vault"></i> THE PERFUME VAULT</div>
-      <p>Curating the world's most extraordinary fragrances for those who understand that scent is the ultimate luxury.</p>
-      <div class="footer-social">
-        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+      <div class="footer-col">
+        <h4>Account</h4>
+        <ul>
+          <li><a onclick="toggleAuthModal()" style="cursor:pointer">Sign In</a></li>
+          <li><a onclick="toggleAuthModal()" style="cursor:pointer">Create Account</a></li>
+          <li><a data-route="/orders">My Orders</a></li>
+          <li><a data-route="/cart">My Cart</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a onclick="Router.navigate('/shipping')" style="cursor:pointer">Shipping & Returns</a></li>
+          <li><a onclick="Router.navigate('/authenticity')" style="cursor:pointer">Authenticity Guarantee</a></li>
+          <li><a onclick="Router.navigate('/contact')" style="cursor:pointer">Contact Us</a></li>
+          <li><a onclick="Router.navigate('/faq')" style="cursor:pointer">FAQ</a></li>
+        </ul>
       </div>
     </div>
-    <div class="footer-col"><h4>Collections</h4><ul>
-      <li><a data-route="/shop">All Fragrances</a></li>
-      <li><a onclick="Router.navigate('/shop?category=Men')">Men's Collection</a></li>
-      <li><a onclick="Router.navigate('/shop?category=Women')">Women's Collection</a></li>
-      <li><a onclick="Router.navigate('/shop?category=Luxury')">Luxury Exclusives</a></li>
-    </ul></div>
-    <div class="footer-col"><h4>Account</h4><ul>
-      <li><a data-route="/login">Sign In</a></li>
-      <li><a data-route="/register">Create Account</a></li>
-      <li><a data-route="/orders">My Orders</a></li>
-      <li><a data-route="/cart">My Cart</a></li>
-    </ul></div>
-    <div class="footer-col"><h4>Info</h4><ul>
-      <li><a href="#">Shipping & Returns</a></li>
-      <li><a href="#">Authenticity Guarantee</a></li>
-      <li><a href="#">Contact Us</a></li>
-      <li><a href="#">FAQ</a></li>
-    </ul></div>
-  </div>
-  <div class="footer-bottom">
-    <p>&copy; 2024 The Perfume Vault. All rights reserved.</p>
-    <div class="footer-badges">
-      <span><i class="fas fa-lock"></i> SSL Secure</span>
-      <span><i class="fas fa-shield-alt"></i> 100% Authentic</span>
-      <span><i class="fas fa-undo"></i> 30-Day Returns</span>
+    <div class="footer-bottom">
+      <p>&copy; 2024 The Perfume Vault. All rights reserved.</p>
+      <div class="footer-badges">
+        <span><i class="fas fa-lock"></i> SSL Secure</span>
+        <span><i class="fas fa-shield-alt"></i> 100% Authentic</span>
+        <span><i class="fas fa-undo"></i> 30-Day Returns</span>
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
-<!-- ── AUTH MODAL ─────────────────────────────────────────────── -->
-<div id="auth-modal" class="modal-overlay" onclick="if(event.target===this)toggleAuthModal()">
-  <div class="modal-box auth-modal-box">
-    <button class="modal-close" onclick="toggleAuthModal()"><i class="fas fa-times"></i></button>
+  <!-- ── AUTH MODAL ─────────────────────────────────────────────── -->
+  <div id="auth-modal" class="modal-overlay" onclick="if(event.target===this)toggleAuthModal()">
+    <div class="modal-box auth-modal-box">
+      <button class="modal-close" onclick="toggleAuthModal()"><i class="fas fa-times"></i></button>
 
-    <!-- Guest/Login view -->
-    <div id="auth-guest-view">
-      <div class="auth-header">
-        <i class="fas fa-vault auth-vault-icon"></i>
-        <h2>Access The Vault</h2>
-        <p>Sign in to your account</p>
-      </div>
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
-        <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</button>
-      </div>
-      <div id="auth-login-form" class="auth-form active">
-        <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')handleLogin()" /></div>
-        <div class="form-group"><label>Password</label>
-          <div class="password-wrap"><input type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleLogin()" />
-          <button type="button" onclick="togglePwd('login-password',this)"><i class="fas fa-eye"></i></button></div>
+      <!-- Guest/Login view -->
+      <div id="auth-guest-view">
+        <div class="auth-header">
+          <i class="fas fa-vault auth-vault-icon"></i>
+          <h2>Access The Vault</h2>
+          <p>Sign in to your account</p>
         </div>
-        <button class="btn-primary full-width" onclick="handleLogin()" id="login-btn">Sign In to Vault</button>
-        <button class="btn-ghost full-width" style="margin-top:0.5rem" onclick="handleGuestMode()"><i class="fas fa-user-secret"></i> Continue as Guest</button>
-        <p class="auth-switch">New here? <a onclick="switchAuthTab('register')" style="color:var(--gold);cursor:pointer">Create account</a></p>
-      </div>
-      <div id="auth-register-form" class="auth-form">
-        <div class="form-group"><label>Full Name *</label><input type="text" id="reg-name" placeholder="Your name" /></div>
-        <div class="form-group"><label>Email *</label>
-          <input type="email" id="reg-email" placeholder="your@email.com" oninput="checkEmailAvailModal(this.value)" />
-          <span class="field-status" id="modal-status-email"></span>
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+          <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</button>
         </div>
-        <div class="form-group"><label>Password *</label>
-          <div class="password-wrap"><input type="password" id="reg-password" placeholder="Min. 6 characters" />
-          <button type="button" onclick="togglePwd('reg-password',this)"><i class="fas fa-eye"></i></button></div>
+        <div id="auth-login-form" class="auth-form active">
+          <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="your@email.com"
+              onkeydown="if(event.key==='Enter')handleLogin()" /></div>
+          <div class="form-group"><label>Password</label>
+            <div class="password-wrap"><input type="password" id="login-password" placeholder="••••••••"
+                onkeydown="if(event.key==='Enter')handleLogin()" />
+              <button type="button" onclick="togglePwd('login-password',this)"><i class="fas fa-eye"></i></button>
+            </div>
+          </div>
+          <button class="btn-primary full-width" onclick="handleLogin()" id="login-btn">Sign In to Vault</button>
+          <div class="auth-divider"><span>or</span></div>
+          <button class="btn-google full-width" onclick="triggerGoogleSignIn()"><img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" alt="G" /> Continue
+            with Google</button>
+          <button class="btn-ghost full-width" style="margin-top:0.5rem" onclick="handleGuestMode()"><i
+              class="fas fa-user-secret"></i> Continue as Guest</button>
+          <p class="auth-switch">New here? <a onclick="switchAuthTab('register')"
+              style="color:var(--gold);cursor:pointer">Create account</a></p>
         </div>
-        <button class="btn-primary full-width" onclick="handleRegister()" id="register-btn">Join The Vault</button>
-        <p class="auth-switch">Have an account? <a onclick="switchAuthTab('login')" style="color:var(--gold);cursor:pointer">Sign in</a></p>
+        <div id="auth-register-form" class="auth-form">
+          <div class="form-group"><label>Full Name *</label><input type="text" id="reg-name" placeholder="Your name" />
+          </div>
+          <div class="form-group"><label>Email *</label>
+            <input type="email" id="reg-email" placeholder="your@email.com"
+              oninput="checkEmailAvailModal(this.value)" />
+            <span class="field-status" id="modal-status-email"></span>
+          </div>
+          <div class="form-group"><label>Password *</label>
+            <div class="password-wrap"><input type="password" id="reg-password" placeholder="Min. 6 characters" />
+              <button type="button" onclick="togglePwd('reg-password',this)"><i class="fas fa-eye"></i></button>
+            </div>
+          </div>
+          <button class="btn-primary full-width" onclick="handleRegister()" id="register-btn">Join The Vault</button>
+          <div class="auth-divider"><span>or</span></div>
+          <button class="btn-google full-width" onclick="triggerGoogleSignIn()"><img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" alt="G" /> Continue
+            with Google</button>
+          <p class="auth-switch">Have an account? <a onclick="switchAuthTab('login')"
+              style="color:var(--gold);cursor:pointer">Sign in</a></p>
+        </div>
       </div>
-    </div>
 
-    <!-- Logged-in view -->
-    <div id="auth-logged-view" style="display:none">
-      <div class="auth-header">
-        <i class="fas fa-vault auth-vault-icon"></i>
-        <h2>Your Vault</h2>
-      </div>
-      <div class="profile-card">
-        <div class="profile-avatar-big" id="profile-avatar-big">U</div>
-        <p class="profile-name-big" id="profile-name-big"></p>
-        <p class="profile-email-big" id="profile-email-big"></p>
-        <span class="admin-badge" id="admin-badge" style="display:none"><i class="fas fa-crown"></i> Admin</span>
-      </div>
-      <div class="profile-btns">
-        <button class="btn-ghost full-width" onclick="Router.navigate('/orders'); toggleAuthModal()"><i class="fas fa-box"></i> My Orders</button>
-        <button class="btn-ghost full-width" id="admin-panel-btn" onclick="window.location='/admin'" style="display:none"><i class="fas fa-cog"></i> Admin Panel</button>
-        <button class="btn-danger full-width" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+      <!-- Logged-in view -->
+      <div id="auth-logged-view" style="display:none">
+        <div class="auth-header">
+          <i class="fas fa-vault auth-vault-icon"></i>
+          <h2>Your Vault</h2>
+        </div>
+        <div class="profile-card">
+          <div class="profile-avatar-big" id="profile-avatar-big">U</div>
+          <p class="profile-name-big" id="profile-name-big"></p>
+          <p class="profile-email-big" id="profile-email-big"></p>
+          <span class="admin-badge" id="admin-badge" style="display:none"><i class="fas fa-crown"></i> Admin</span>
+        </div>
+        <div class="profile-btns">
+          <button class="btn-ghost full-width" onclick="Router.navigate('/orders'); toggleAuthModal()"><i
+              class="fas fa-box"></i> My Orders</button>
+          <button class="btn-ghost full-width" onclick="Router.navigate('/cart'); toggleAuthModal()"><i
+              class="fas fa-shopping-bag"></i> View Cart</button>
+          <button class="btn-ghost full-width" id="admin-panel-btn" onclick="window.location='/admin'"
+            style="display:none"><i class="fas fa-cog"></i> Admin Panel</button>
+          <button class="btn-danger full-width" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Sign
+            Out</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- ── TOAST ──────────────────────────────────────────────────── -->
-<div id="toast-container" class="toast-container"></div>
+  <!-- ── TOAST ──────────────────────────────────────────────────── -->
+  <div id="toast-container" class="toast-container"></div>
 
-<!-- ── SCRIPTS (order matters) ───────────────────────────────── -->
-<!-- Cursor — load first so it's always active -->
-<script src="/js/cursor.js"></script>
+  <!-- ── SCRIPTS (order matters) ───────────────────────────────── -->
+  <!-- Cursor — load first so it's always active -->
+  <script src="/js/cursor.js"></script>
 
-<!-- Core modules -->
-<script src="/js/auth.js"></script>
-<script src="/js/cart.js"></script>
+  <!-- Core modules -->
+  <script src="/js/auth.js"></script>
+  <script src="/js/cart.js"></script>
 
-<!-- Page modules -->
-<script src="/js/pages/home.js"></script>
-<script src="/js/pages/shop.js"></script>
-<script src="/js/pages/product.js"></script>
-<script src="/js/pages/cart-page.js"></script>
-<script src="/js/pages/checkout-page.js"></script>
-<script src="/js/pages/auth-pages.js"></script>
+  <!-- Page modules -->
+  <script src="/js/pages/home.js"></script>
+  <script src="/js/pages/shop.js"></script>
+  <script src="/js/pages/product.js"></script>
+  <script src="/js/pages/cart-page.js"></script>
+  <script src="/js/pages/checkout-page.js"></script>
+  <script src="/js/pages/auth-pages.js"></script>
+  <script src="/js/pages/info-pages.js"></script>
 
-<!-- Router + Main app -->
-<script src="/js/router.js"></script>
-<script src="/js/main.js"></script>
+  <!-- Router + Main app -->
+  <script src="/js/router.js"></script>
+  <script src="/js/main.js"></script>
 
-<!-- 3D Intro (loaded last — not blocking) -->
-<script src="/js/three-intro.js"></script>
+  <!-- 3D Intro (loaded last — not blocking) -->
+  <script src="/js/three-intro.js"></script>
 </body>
+
 </html>

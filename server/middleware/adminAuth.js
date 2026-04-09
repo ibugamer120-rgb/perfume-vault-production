@@ -1,7 +1,9 @@
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../../admin.env') });
 
-// Parse admin emails (case-insensitive, comma-separated)
+// Load admin.env if it exists (local dev) — Railway uses env vars directly
+try { require('dotenv').config({ path: path.join(__dirname, '../../admin.env') }); } catch { }
+
+// Parse admin emails — works from admin.env locally OR Railway env vars in production
 const getAdminEmails = () =>
   (process.env.ADMIN_EMAILS || '')
     .split(',')

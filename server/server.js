@@ -62,10 +62,10 @@ app.use(express.static(path.join(__dirname, '../client'), {
 }));
 
 // ── API Routes ────────────────────────────────────────────────────
-app.use('/api/auth',     require('./routes/auth'));
+app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
-app.use('/api/orders',   require('./routes/orders'));
-app.use('/api/admin',    require('./routes/admin'));
+app.use('/api/orders', require('./routes/orders'));
+app.use('/api/admin', require('./routes/admin'));
 
 // ── Health check ──────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
@@ -77,6 +77,28 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: Math.round(process.uptime()) + 's',
   });
+});
+
+// ── Public config (safe to expose) ───────────────────────────────
+app.get('/api/config', (req, res) => {
+  res.json({ googleClientId: process.env.GOOGLE_CLIENT_ID || null });
+});
+
+// ── Site config (contact, socials) ───────────────────────────────
+app.get('/api/config/contact', async (req, res) => {
+  try {
+    const SiteConfig = require('./models/SiteConfig');
+    const doc = await SiteConfig.findOne({ key: 'contact' });
+    res.json({ success: true, contact: doc?.value || {} });
+  } catch { res.json({ success: true, contact: {} }); }
+});
+
+app.put('/api/config/contact', require('./middleware/auth').protect, require('./middleware/adminAuth').adminOnly, async (req, res) => {
+  try {
+    const SiteConfig = require('./models/SiteConfig');
+    const doc = await SiteConfig.findOneAndUpdate({ key: 'contact' }, { value: req.body }, { upsert: true, new: true });
+    res.json({ success: true, contact: doc.value });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
 // ── SPA Catch-all ─────────────────────────────────────────────────

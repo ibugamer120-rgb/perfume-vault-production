@@ -52,6 +52,7 @@ function adminLogout() {
 
 // Auto-login if token exists
 window.addEventListener('DOMContentLoaded', async () => {
+  checkMobileNav();
   if (adminToken) {
     try {
       const res = await fetch('/api/auth/me', { headers: { Authorization: `Bearer ${adminToken}` } });
@@ -68,9 +69,23 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// ── Navigation ────────────────────────────────────────────────────
-const sectionTitles = { dashboard: 'Dashboard', products: 'Products', 'add-product': 'Add Product', orders: 'Orders', users: 'Users' };
+// ── Mobile Sidebar ────────────────────────────────────────────────
+const sectionTitles = { dashboard: 'Dashboard', products: 'Products', 'add-product': 'Add Product', orders: 'Orders', users: 'Users', 'site-editor': 'Website Editor' };
+function toggleAdminSidebar() {
+  const sidebar = document.getElementById('admin-sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const isOpen = sidebar?.classList.toggle('mobile-open');
+  if (overlay) overlay.classList.toggle('open', isOpen);
+}
 
+// Show hamburger on mobile
+function checkMobileNav() {
+  const btn = document.getElementById('sidebar-toggle-btn');
+  if (btn) btn.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+}
+window.addEventListener('resize', checkMobileNav);
+
+// Close sidebar when a nav item is clicked on mobile
 function showSection(name) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -78,12 +93,21 @@ function showSection(name) {
   document.getElementById(`nav-${name}`)?.classList.add('active');
   document.getElementById('section-title').textContent = sectionTitles[name] || name;
 
+  // Close sidebar on mobile after navigation
+  if (window.innerWidth <= 768) {
+    document.getElementById('admin-sidebar')?.classList.remove('mobile-open');
+    document.getElementById('sidebar-overlay')?.classList.remove('open');
+  }
+
   if (name === 'dashboard') loadDashboard();
   if (name === 'products') loadProducts();
   if (name === 'orders') loadOrders('');
   if (name === 'users') loadUsers();
   if (name === 'add-product') { resetProductForm(); }
+  if (name === 'site-editor') { loadSiteConfig(); }
 }
+
+
 
 // ── Dashboard ─────────────────────────────────────────────────────
 async function loadDashboard() {
@@ -222,7 +246,7 @@ async function deleteProduct(id, name) {
 function resetProductForm() {
   document.getElementById('edit-product-id').value = '';
   document.getElementById('product-form-title').textContent = 'Add New Product';
-  ['p-name','p-price','p-compare-price','p-stock','p-size','p-brand','p-short-desc','p-description','p-top-notes','p-mid-notes','p-base-notes','p-tags','p-image-urls'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['p-name', 'p-price', 'p-compare-price', 'p-stock', 'p-size', 'p-brand', 'p-short-desc', 'p-description', 'p-top-notes', 'p-mid-notes', 'p-base-notes', 'p-tags', 'p-image-urls'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('p-category').value = '';
   document.getElementById('p-featured').value = 'false';
   uploadedImageUrls = [];
@@ -276,7 +300,7 @@ async function loadOrders(status = '') {
         <td><span class="badge b-${o.payment.status}">${o.payment.status}</span></td>
         <td>
           <select onchange="updateOrderStatus('${o._id}', this.value)" style="background:var(--bg-3);border:1px solid var(--border);color:var(--text-muted);padding:0.2rem 0.4rem;font-size:0.68rem">
-            ${['pending','confirmed','processing','shipped','delivered','cancelled'].map(s => `<option value="${s}" ${s===o.status?'selected':''}>${s}</option>`).join('')}
+            ${['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map(s => `<option value="${s}" ${s === o.status ? 'selected' : ''}>${s}</option>`).join('')}
           </select>
         </td>
         <td><span class="badge b-${o.status}">${o.status}</span></td>
@@ -305,7 +329,7 @@ async function loadUsers() {
         <td>${u.email}</td>
         <td>${new Date(u.createdAt).toLocaleDateString()}</td>
         <td>${u.isAdmin ? '<span class="badge b-confirmed">Yes</span>' : '<span style="color:var(--text-dim);font-size:0.75rem">No</span>'}</td>
-        <td><button class="btn-a" onclick="toggleAdmin('${u._id}','${u.name.replace(/'/g,"\\'")}',${u.isAdmin})">${u.isAdmin ? 'Revoke Admin' : 'Make Admin'}</button></td>
+        <td><button class="btn-a" onclick="toggleAdmin('${u._id}','${u.name.replace(/'/g, "\\'")}',${u.isAdmin})">${u.isAdmin ? 'Revoke Admin' : 'Make Admin'}</button></td>
       </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:2rem">No users found</td></tr>';
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--danger);padding:2rem">${err.message}</td></tr>`;
@@ -348,5 +372,49 @@ async function toggleFeatured(id, currentFeatured) {
     await apiFetch(`/api/products/${id}`, { method: 'PUT', body: JSON.stringify({ featured: !currentFeatured }) });
     adminToast(!currentFeatured ? 'Product marked as featured!' : 'Product unfeatured', 's');
     loadProducts();
+  } catch (err) { adminToast(err.message, 'e'); }
+}
+
+// ── Website Editor ────────────────────────────────────────────────
+async function loadSiteConfig() {
+  try {
+    const res = await fetch('/api/config/contact');
+    const data = await res.json();
+    const c = data.contact || {};
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+    set('se-email', c.email);
+    set('se-phone', c.phone);
+    set('se-address', c.address);
+    set('se-hours', c.hours);
+    set('se-instagram', c.socials?.instagram);
+    set('se-facebook', c.socials?.facebook);
+    set('se-twitter', c.socials?.twitter);
+    set('se-pinterest', c.socials?.pinterest);
+  } catch (err) { adminToast('Failed to load config: ' + err.message, 'e'); }
+}
+
+async function saveSiteConfig() {
+  const get = (id) => document.getElementById(id)?.value.trim() || '';
+  const payload = {
+    email: get('se-email'),
+    phone: get('se-phone'),
+    address: get('se-address'),
+    hours: get('se-hours'),
+    socials: {
+      instagram: get('se-instagram'),
+      facebook: get('se-facebook'),
+      twitter: get('se-twitter'),
+      pinterest: get('se-pinterest'),
+    },
+  };
+  try {
+    const res = await fetch('/api/config/contact', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + adminToken },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    adminToast('Website settings saved!', 's');
   } catch (err) { adminToast(err.message, 'e'); }
 }
