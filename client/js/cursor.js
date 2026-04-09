@@ -112,13 +112,28 @@
   }
   animateRing();
 
-  // Hover detection
+  // Hover detection + magnetic pull on product cards
   const hoverTargets = 'a, button, [onclick], input, select, textarea, .product-card, .pill, .nav-link, label, .cart-item, [role="button"]';
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(hoverTargets)) document.body.classList.add('cursor-hover');
   });
   document.addEventListener('mouseout', (e) => {
     if (e.target.closest(hoverTargets)) document.body.classList.remove('cursor-hover');
+  });
+
+  // Magnetic pull toward product cards
+  document.addEventListener('mousemove', (e) => {
+    const card = e.target.closest('.product-card');
+    if (card) {
+      const rect = card.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) * 0.12;
+      const dy = (e.clientY - cy) * 0.12;
+      card.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(1.02)';
+    } else {
+      document.querySelectorAll('.product-card').forEach(c => { c.style.transform = ''; });
+    }
   });
 
   // Click animation

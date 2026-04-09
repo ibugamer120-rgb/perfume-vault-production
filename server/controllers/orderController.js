@@ -14,7 +14,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
 
   // Validate payment method
   const paymentMethod = payment?.method || 'cod';
-  if (!['card', 'cod', 'mock'].includes(paymentMethod)) {
+  if (!['card', 'cod', 'jazzcash', 'easypaisa', 'mock'].includes(paymentMethod)) {
     return res.status(400).json({ success: false, message: 'Invalid payment method.' });
   }
 
@@ -69,8 +69,8 @@ exports.createOrder = asyncHandler(async (req, res) => {
     total: Math.round(total * 100) / 100,
   });
 
-  // COD: stays pending until delivery. Card/mock: simulate payment
-  if (paymentMethod !== 'cod') {
+  // COD/wallet: stays pending. Card/mock: simulate payment
+  if (paymentMethod !== 'cod' && paymentMethod !== 'jazzcash' && paymentMethod !== 'easypaisa') {
     await new Promise((resolve) => setTimeout(resolve, 800));
     order.payment.status = 'paid';
     order.payment.paidAt = new Date();

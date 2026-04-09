@@ -1,4 +1,4 @@
-/* pages/checkout-page.js — Pakistan-only checkout with Card & COD */
+/* pages/checkout-page.js — Pakistan checkout: COD + JazzCash + Easypaisa */
 
 function renderCheckoutPage() {
   if (Cart.getItems().length === 0) {
@@ -6,7 +6,7 @@ function renderCheckoutPage() {
     Router.navigate('/shop'); return;
   }
   document.title = 'Checkout — The Perfume Vault';
-  window._selectedPayment = 'cod'; // default
+  window._selectedPayment = 'cod';
 
   Router.setContent(
     '<div class="page-container">' +
@@ -28,7 +28,7 @@ function renderCheckoutPage() {
     '<div class="checkout-page-grid">' +
     '<div class="checkout-page-main">' +
 
-    // ── Step 1: Shipping ──
+    // Step 1: Shipping
     '<div id="checkout-step-1" class="checkout-step active">' +
     '<h3>Shipping Information</h3>' +
     '<div class="form-row">' +
@@ -53,42 +53,66 @@ function renderCheckoutPage() {
     '<button class="btn-ghost full-width" onclick="Router.navigate(\'/cart\')" style="margin-top:0.6rem"><i class="fas fa-arrow-left"></i> Back to Cart</button>' +
     '</div>' +
 
-    // ── Step 2: Payment ──
+    // Step 2: Payment
     '<div id="checkout-step-2" class="checkout-step">' +
     '<h3>Payment Method</h3>' +
+    '<p style="font-size:0.78rem;color:var(--text-dim);margin-bottom:1rem">Choose how you want to pay. All methods are secure.</p>' +
     '<div class="payment-methods">' +
+
+    // COD
     '<div class="payment-option selected" data-method="cod" onclick="selectPayment(\'cod\')">' +
-    '<i class="fas fa-money-bill-wave" style="color:#4caf50"></i>' +
-    '<div><strong>Cash on Delivery</strong><small>Pay when your order arrives</small></div>' +
+    '<div class="pay-icon-wrap" style="background:rgba(76,175,80,0.12)"><i class="fas fa-money-bill-wave" style="color:#4caf50"></i></div>' +
+    '<div><strong>Cash on Delivery</strong><small>Pay cash when your order arrives</small></div>' +
     '<span class="pay-check"><i class="fas fa-check"></i></span>' +
     '</div>' +
-    '<div class="payment-option" data-method="card" onclick="selectPayment(\'card\')">' +
-    '<i class="fas fa-credit-card" style="color:var(--gold)"></i>' +
-    '<div><strong>Credit / Debit Card</strong><small>Visa, Mastercard, Amex</small></div>' +
+
+    // JazzCash
+    '<div class="payment-option" data-method="jazzcash" onclick="selectPayment(\'jazzcash\')">' +
+    '<div class="pay-icon-wrap" style="background:rgba(255,60,0,0.1)"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/JazzCash_logo.svg/200px-JazzCash_logo.svg.png" alt="JazzCash" style="height:22px;object-fit:contain" onerror="this.parentElement.innerHTML=\'<i class=\\\"fas fa-mobile-alt\\\" style=\\\"color:#ff3c00\\\"></i>\'" /></div>' +
+    '<div><strong>JazzCash</strong><small>Mobile wallet · Instant payment</small></div>' +
     '<span class="pay-check"><i class="fas fa-check"></i></span>' +
     '</div>' +
+
+    // Easypaisa
+    '<div class="payment-option" data-method="easypaisa" onclick="selectPayment(\'easypaisa\')">' +
+    '<div class="pay-icon-wrap" style="background:rgba(0,160,80,0.1)"><img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Easypaisa_logo.svg/200px-Easypaisa_logo.svg.png" alt="Easypaisa" style="height:22px;object-fit:contain" onerror="this.parentElement.innerHTML=\'<i class=\\\"fas fa-mobile-alt\\\" style=\\\"color:#00a050\\\"></i>\'" /></div>' +
+    '<div><strong>Easypaisa</strong><small>Mobile wallet · Instant payment</small></div>' +
+    '<span class="pay-check"><i class="fas fa-check"></i></span>' +
+    '</div>' +
+
     '</div>' +
 
     // COD info
-    '<div id="cod-info-section" style="margin-top:1.2rem">' +
-    '<div class="cod-notice">' +
-    '<i class="fas fa-info-circle"></i>' +
-    '<p>You will pay in cash when your order is delivered. Please have the exact amount ready.</p>' +
+    '<div id="pay-info-cod" class="pay-method-info" style="margin-top:1.2rem">' +
+    '<div class="cod-notice"><i class="fas fa-info-circle"></i>' +
+    '<p>Pay in cash when your order is delivered. Please have the exact amount ready. Our delivery agent will collect payment at your door.</p>' +
     '</div>' +
     '</div>' +
 
-    // Card form (hidden by default)
-    '<div id="card-form-section" style="display:none;margin-top:1.2rem">' +
-    '<div class="card-security-badge"><i class="fas fa-shield-alt"></i> 256-bit SSL Encrypted — Your card details are safe</div>' +
-    '<div class="form-group" style="position:relative">' +
-    '<label>Card Number <i id="card-type-icon" class="fas fa-credit-card" style="margin-left:0.4rem;color:var(--gold)"></i></label>' +
-    '<input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" autocomplete="cc-number" />' +
+    // JazzCash info
+    '<div id="pay-info-jazzcash" class="pay-method-info" style="display:none;margin-top:1.2rem">' +
+    '<div class="ewallet-notice">' +
+    '<div class="ewallet-steps">' +
+    '<div class="ewallet-step"><span>1</span><p>Place your order and note the total amount</p></div>' +
+    '<div class="ewallet-step"><span>2</span><p>Open your JazzCash app or dial <strong>*786#</strong></p></div>' +
+    '<div class="ewallet-step"><span>3</span><p>Send payment to our JazzCash number (shown after order)</p></div>' +
+    '<div class="ewallet-step"><span>4</span><p>Send us the transaction ID via WhatsApp to confirm</p></div>' +
     '</div>' +
-    '<div class="form-row">' +
-    '<div class="form-group"><label>Expiry (MM / YY)</label><input type="text" id="card-expiry" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)" autocomplete="cc-exp" /></div>' +
-    '<div class="form-group"><label>CVV / CVC</label><input type="password" id="card-cvv" placeholder="•••" maxlength="4" autocomplete="cc-csc" /></div>' +
+    '<div class="ewallet-badge"><i class="fas fa-shield-alt"></i> Secure · Instant · Verified</div>' +
     '</div>' +
-    '<div class="form-group"><label>Name on Card</label><input type="text" id="card-name" placeholder="Ali Khan" autocomplete="cc-name" /></div>' +
+    '</div>' +
+
+    // Easypaisa info
+    '<div id="pay-info-easypaisa" class="pay-method-info" style="display:none;margin-top:1.2rem">' +
+    '<div class="ewallet-notice">' +
+    '<div class="ewallet-steps">' +
+    '<div class="ewallet-step"><span>1</span><p>Place your order and note the total amount</p></div>' +
+    '<div class="ewallet-step"><span>2</span><p>Open your Easypaisa app or visit any Easypaisa shop</p></div>' +
+    '<div class="ewallet-step"><span>3</span><p>Send payment to our Easypaisa number (shown after order)</p></div>' +
+    '<div class="ewallet-step"><span>4</span><p>Send us the transaction ID via WhatsApp to confirm</p></div>' +
+    '</div>' +
+    '<div class="ewallet-badge"><i class="fas fa-shield-alt"></i> Secure · Instant · Verified</div>' +
+    '</div>' +
     '</div>' +
 
     '<div class="checkout-nav" style="margin-top:1.5rem">' +
@@ -97,7 +121,7 @@ function renderCheckoutPage() {
     '</div>' +
     '</div>' +
 
-    // ── Step 3: Review ──
+    // Step 3: Review
     '<div id="checkout-step-3" class="checkout-step">' +
     '<h3>Review Your Order</h3>' +
     '<div id="review-content"></div>' +
@@ -107,18 +131,19 @@ function renderCheckoutPage() {
     '</div>' +
     '</div>' +
 
-    // ── Step 4: Success ──
+    // Step 4: Success
     '<div id="checkout-step-4" class="checkout-step">' +
     '<div class="order-confirmation">' +
-    '<div class="success-animation" id="success-anim">' +
+    '<div class="success-animation">' +
     '<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">' +
     '<circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>' +
     '<path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>' +
     '</svg>' +
     '</div>' +
     '<h3 style="margin-top:1rem">Order Placed!</h3>' +
-    '<p class="confirmation-sub">Your fragrances are being prepared with care. We\'ll deliver to Pakistan.</p>' +
-    '<div class="order-details" id="order-success-content"></div>' +
+    '<p class="confirmation-sub">Your fragrances are being prepared with care.</p>' +
+    '<div id="order-success-content" class="order-details"></div>' +
+    '<div id="payment-instructions" style="margin-top:1rem"></div>' +
     '<div style="display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem">' +
     '<button class="btn-primary" onclick="Router.navigate(\'/shop\')">Continue Shopping</button>' +
     '<button class="btn-ghost" onclick="Router.navigate(\'/orders\')">View Orders</button>' +
@@ -127,8 +152,6 @@ function renderCheckoutPage() {
     '</div>' +
 
     '</div>' +
-
-    // ── Sidebar ──
     '<div class="checkout-sidebar">' +
     '<h3>Order Summary</h3>' +
     '<div class="checkout-sidebar-items" id="checkout-sidebar-items"></div>' +
@@ -141,6 +164,16 @@ function renderCheckoutPage() {
   populateCheckoutSidebar();
 }
 
+function selectPayment(method) {
+  document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+  const sel = document.querySelector('.payment-option[data-method="' + method + '"]');
+  if (sel) sel.classList.add('selected');
+  document.querySelectorAll('.pay-method-info').forEach(el => el.style.display = 'none');
+  const info = document.getElementById('pay-info-' + method);
+  if (info) info.style.display = 'block';
+  window._selectedPayment = method;
+}
+
 function populateCheckoutSidebar() {
   const items = Cart.getItems();
   const sideItems = document.getElementById('checkout-sidebar-items');
@@ -148,20 +181,11 @@ function populateCheckoutSidebar() {
     sideItems.innerHTML = items.map(function (i) {
       return '<div style="display:flex;gap:0.8rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(201,168,76,0.06)">' +
         '<img src="' + i.image + '" alt="' + i.name + '" style="width:50px;height:62px;object-fit:cover;border:1px solid var(--border)" onerror="this.style.display=\'none\'" />' +
-        '<div style="flex:1;min-width:0">' +
-        '<p style="font-size:0.82rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + i.name + '</p>' +
-        '<p style="font-size:0.72rem;color:var(--text-dim)">\u00d7 ' + i.quantity + '</p>' +
-        '</div>' +
+        '<div style="flex:1;min-width:0"><p style="font-size:0.82rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + i.name + '</p>' +
+        '<p style="font-size:0.72rem;color:var(--text-dim)">\u00d7 ' + i.quantity + '</p></div>' +
         '<span style="font-size:0.85rem;color:var(--gold)">PKR ' + (i.price * i.quantity).toFixed(2) + '</span>' +
         '</div>';
     }).join('');
   }
   populateSummary();
-}
-
-function formatCNIC(input) {
-  let v = input.value.replace(/\D/g, '').substring(0, 13);
-  if (v.length > 12) v = v.slice(0, 5) + '-' + v.slice(5, 12) + '-' + v.slice(12);
-  else if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5);
-  input.value = v;
 }

@@ -8,9 +8,10 @@ function createProductCard(p) {
   const imgUrl = p.images?.[0]?.url || '';
   const notes = [...(p.notes?.top || []), ...(p.notes?.middle || [])].slice(0, 3).join(' · ');
   const oos = p.stock === 0;
+  const lowStock = !oos && p.stock > 0 && p.stock <= 5;
   const stars = renderStars(p.rating || 0);
   return `
-  <div class="product-card" onclick="Router.navigate('/product/${p._id}')">
+  <div class="product-card" onclick="Router.navigate('/product/${p._id}')" onmousemove="tiltCard(this,event)" onmouseleave="resetTilt(this)">
     <div class="card-image-wrap">
       ${imgUrl
       ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="card-img-fallback" style="display:none"><i class="fas fa-spray-can"></i></div>`
@@ -24,6 +25,7 @@ function createProductCard(p) {
         ${p.isNew ? '<span class="badge badge-new">New</span>' : ''}
         ${p.featured ? '<span class="badge badge-featured">Featured</span>' : ''}
         ${oos ? '<span class="badge badge-sold-out">Sold Out</span>' : ''}
+        ${lowStock ? '<span class="badge badge-low-stock">Only ' + p.stock + ' left</span>' : ''}
       </div>
       <button class="card-wishlist" onclick="event.stopPropagation();wishlistProduct('${p._id}')" title="Wishlist"><i class="fas fa-heart"></i></button>
     </div>
@@ -33,13 +35,25 @@ function createProductCard(p) {
       ${notes ? `<div class="card-notes">${notes}</div>` : ''}
       <div class="card-footer">
         <div class="card-price">
-          <span class="price-current">${p.price.toFixed(2)}</span>
-          ${p.comparePrice ? `<span class="price-compare">${p.comparePrice.toFixed(2)}</span>` : ''}
+          <span class="price-current">PKR ${p.price.toFixed(2)}</span>
+          ${p.comparePrice ? `<span class="price-compare">PKR ${p.comparePrice.toFixed(2)}</span>` : ''}
         </div>
         ${p.numReviews > 0 ? `<div class="card-rating"><span class="stars">${stars}</span><span>(${p.numReviews})</span></div>` : ''}
       </div>
     </div>
   </div>`;
+}
+
+function tiltCard(card, e) {
+  const rect = card.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width - 0.5;
+  const y = (e.clientY - rect.top) / rect.height - 0.5;
+  card.style.transform = 'perspective(600px) rotateY(' + (x * 12) + 'deg) rotateX(' + (-y * 12) + 'deg) scale(1.03)';
+  card.style.transition = 'transform 0.1s ease';
+}
+function resetTilt(card) {
+  card.style.transform = '';
+  card.style.transition = 'transform 0.4s ease';
 }
 
 async function quickAdd(id, btn) {
@@ -224,11 +238,6 @@ function selectPayment(method) {
 }
 
 function proceedFromPayment() {
-  const method = window._selectedPayment || 'cod';
-  if (method === 'card') {
-    if (!validateCardDetails()) return;
-  }
-  // Show review step
   populateReview();
   goToStep(3);
 }
@@ -331,13 +340,30 @@ async function placeOrder() {
 
 function showOrderSuccess(order, addr) {
   const el = document.getElementById('order-success-content');
-  if (!el) return;
-  el.innerHTML =
-    '<div class="order-detail-row"><span>Order #</span><strong>' + order.orderNumber + '</strong></div>' +
-    '<div class="order-detail-row"><span>Total</span><strong style="color:var(--gold)">PKR ' + order.total.toFixed(2) + '</strong></div>' +
-    '<div class="order-detail-row"><span>Payment</span><strong>' + (order.payment.method === 'cod' ? 'Cash on Delivery' : 'Card') + '</strong></div>' +
-    '<div class="order-detail-row"><span>Status</span><strong>' + order.status + '</strong></div>' +
-    '<div class="order-detail-row"><span>Email</span><strong>' + addr.email + '</strong></div>';
+  if (el) {
+    const methodLabels = { cod: 'Cash on Delivery', jazzcash: 'JazzCash', easypaisa: 'Easypaisa' };
+    el.innerHTML =
+      '<div class="order-detail-row"><span>Order #</span><strong>' + order.orderNumber + '</strong></div>' +
+      '<div class="order-detail-row"><span>Total</span><strong style="color:var(--gold)">PKR ' + order.total.toFixed(2) + '</strong></div>' +
+      '<div class="order-detail-row"><span>Payment</span><strong>' + (methodLabels[order.payment.method] || order.payment.method) + '</strong></div>' +
+      '<div class="order-detail-row"><span>Status</span><strong>' + order.status + '</strong></div>' +
+      '<div class="order-detail-row"><span>Email</span><strong>' + addr.email + '</strong></div>';
+  }
+  // Show payment instructions for wallet methods
+  const instrEl = document.getElementById('payment-instructions');
+  if (instrEl) {
+    const method = order.payment.method;
+    if (method === 'jazzcash' || method === 'easypaisa') {
+      instrEl.innerHTML =
+        '<div class="ewallet-notice" style="margin-top:0">' +
+        '<div style="font-size:0.82rem;color:var(--text-muted)">' +
+        '<strong style="color:var(--gold);display:block;margin-bottom:0.5rem"><i class="fas fa-info-circle"></i> Payment Instructions</strong>' +
+        'Please send <strong>PKR ' + order.total.toFixed(2) + '</strong> to our ' + (method === 'jazzcash' ? 'JazzCash' : 'Easypaisa') + ' number. ' +
+        'Our team will contact you on <strong>' + addr.phone + '</strong> with payment details within 30 minutes.' +
+        '</div>' +
+        '</div>';
+    }
+  }
 }
 
 function clearCartAfterOrder() { Cart.clear(); Cart.updateUI(); }

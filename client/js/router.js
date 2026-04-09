@@ -73,16 +73,16 @@ const Router = (() => {
 
   function setContent(html) {
     const el = document.getElementById('app-content');
-    if (el) {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(10px)';
+    if (!el) return;
+    // Page wipe transition
+    el.style.transition = 'opacity 0.18s ease, transform 0.18s ease';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(8px)';
+    setTimeout(() => {
       el.innerHTML = html;
-      requestAnimationFrame(() => {
-        el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-        el.style.opacity = '1';
-        el.style.transform = 'none';
-      });
-    }
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    }, 180);
   }
 
   // Init

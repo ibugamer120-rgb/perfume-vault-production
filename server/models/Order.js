@@ -42,7 +42,7 @@ const orderSchema = new mongoose.Schema(
     payment: {
       method: {
         type: String,
-        enum: ['card', 'cod', 'mock', 'stripe'],
+        enum: ['card', 'cod', 'jazzcash', 'easypaisa', 'mock', 'stripe'],
         default: 'cod',
       },
       status: {
