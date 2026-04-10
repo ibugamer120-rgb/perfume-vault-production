@@ -206,9 +206,11 @@
 
   animate();
 
-  // Auto-dismiss after 3.2s
-  document.body.style.overflow = 'hidden';
-  const timer = setTimeout(dismiss, 3200);
+  // Auto-dismiss after 2s — don't block page load
+  const timer = setTimeout(dismiss, 2000);
+
+  // Also dismiss on page load so images are never blocked
+  window.addEventListener('load', () => setTimeout(dismiss, 500), { once: true });
 
   function dismiss() {
     const el = document.getElementById('intro-overlay');

@@ -14,7 +14,7 @@ function createProductCard(p) {
   <div class="product-card" onclick="Router.navigate('/product/${p._id}')" onmousemove="tiltCard(this,event)" onmouseleave="resetTilt(this)">
     <div class="card-image-wrap">
       ${imgUrl
-      ? `<img src="${imgUrl}" alt="${p.name}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="card-img-fallback" style="display:none"><i class="fas fa-spray-can"></i></div>`
+      ? `<img src="${imgUrl}" alt="${p.name}" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="card-img-fallback" style="display:none"><i class="fas fa-spray-can"></i></div>`
       : `<div class="card-img-fallback"><i class="fas fa-spray-can"></i></div>`}
       <div class="card-overlay">
         <button class="card-quick-add" onclick="event.stopPropagation();quickAdd('${p._id}',this)" ${oos ? 'disabled' : ''}>
