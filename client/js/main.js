@@ -167,21 +167,6 @@ function detectCardType(num) {
   return { type: 'unknown', icon: 'fas fa-credit-card', label: 'Card' };
 }
 
-function formatCard(input) {
-  let v = input.value.replace(/\D/g, '').substring(0, 16);
-  input.value = v.replace(/(.{4})/g, '$1 ').trim();
-  // Update card type icon
-  const info = detectCardType(v);
-  const iconEl = document.getElementById('card-type-icon');
-  if (iconEl) { iconEl.className = info.icon + ' card-type-detected'; iconEl.title = info.label; }
-}
-
-function formatExpiry(input) {
-  let v = input.value.replace(/\D/g, '').substring(0, 4);
-  if (v.length >= 2) v = v.slice(0, 2) + ' / ' + v.slice(2);
-  input.value = v;
-}
-
 // Validate card details
 function validateCardDetails() {
   const num = (document.getElementById('card-number')?.value || '').replace(/\s/g, '');
@@ -223,18 +208,6 @@ function luhnCheck(num) {
     sum += n; alt = !alt;
   }
   return sum % 10 === 0;
-}
-
-// Select payment method
-function selectPayment(method) {
-  document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
-  const selected = document.querySelector('.payment-option[data-method="' + method + '"]');
-  if (selected) selected.classList.add('selected');
-  const cardForm = document.getElementById('card-form-section');
-  const codInfo = document.getElementById('cod-info-section');
-  if (cardForm) cardForm.style.display = method === 'card' ? 'block' : 'none';
-  if (codInfo) codInfo.style.display = method === 'cod' ? 'block' : 'none';
-  window._selectedPayment = method;
 }
 
 function proceedFromPayment() {
