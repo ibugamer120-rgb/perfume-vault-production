@@ -47,6 +47,15 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="/css/style.css" />
+  <script>
+    // Fallback so skipIntro is always defined before three-intro.js loads
+    function skipIntro() {
+      const el = document.getElementById('intro-overlay');
+      if (el) { el.classList.add('hidden'); }
+      document.body.style.overflow = '';
+      if (typeof window._skipIntroFn === 'function') window._skipIntroFn();
+    }
+  </script>
 </head>
 
 <body>

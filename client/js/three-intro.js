@@ -69,16 +69,16 @@
       new THREE.Vector2(0.26, -0.95),
       new THREE.Vector2(0.31, -0.82),
       new THREE.Vector2(0.33, -0.50),
-      new THREE.Vector2(0.31,  0.10),
-      new THREE.Vector2(0.29,  0.36),
-      new THREE.Vector2(0.22,  0.52),
-      new THREE.Vector2(0.15,  0.57),
-      new THREE.Vector2(0.12,  0.68),
-      new THREE.Vector2(0.09,  0.70),
-      new THREE.Vector2(0.09,  0.88),
-      new THREE.Vector2(0.11,  0.92),
-      new THREE.Vector2(0.11,  0.97),
-      new THREE.Vector2(0.00,  0.97),
+      new THREE.Vector2(0.31, 0.10),
+      new THREE.Vector2(0.29, 0.36),
+      new THREE.Vector2(0.22, 0.52),
+      new THREE.Vector2(0.15, 0.57),
+      new THREE.Vector2(0.12, 0.68),
+      new THREE.Vector2(0.09, 0.70),
+      new THREE.Vector2(0.09, 0.88),
+      new THREE.Vector2(0.11, 0.92),
+      new THREE.Vector2(0.11, 0.97),
+      new THREE.Vector2(0.00, 0.97),
     ];
     const body = new THREE.Mesh(new THREE.LatheGeometry(pts, 40), glassMat);
     group.add(body);
@@ -87,7 +87,7 @@
     cap.position.y = 1.07;
     group.add(cap);
 
-    const dome = new THREE.Mesh(new THREE.SphereGeometry(0.12, 28, 12, 0, Math.PI*2, 0, Math.PI/2), goldMat);
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(0.12, 28, 12, 0, Math.PI * 2, 0, Math.PI / 2), goldMat);
     dome.position.y = 1.16;
     group.add(dome);
 
@@ -110,9 +110,9 @@
     const geo = new THREE.BufferGeometry();
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      pos[i*3]   = (Math.random() - 0.5) * 32;
-      pos[i*3+1] = (Math.random() - 0.5) * 20;
-      pos[i*3+2] = (Math.random() - 0.5) * 20 - 5;
+      pos[i * 3] = (Math.random() - 0.5) * 32;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 20;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 20 - 5;
     }
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     return new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xc9a84c, size: 0.05, transparent: true, opacity: 0.45, sizeAttenuation: true }));
@@ -138,10 +138,10 @@
   // Bottles
   const bottleData = [
     { x: -3.8, y: 0.3, z: -1.5, scale: 1.05, rotY: 0.4 },
-    { x:  0.0, y: 0.0, z:  0.0, scale: 1.4,  rotY: 0.0 },
-    { x:  3.8, y: 0.2, z: -2.0, scale: 1.0,  rotY: -0.4 },
+    { x: 0.0, y: 0.0, z: 0.0, scale: 1.4, rotY: 0.0 },
+    { x: 3.8, y: 0.2, z: -2.0, scale: 1.0, rotY: -0.4 },
     { x: -2.0, y: -0.4, z: -4.5, scale: 0.80, rotY: 0.7 },
-    { x:  2.2, y:  0.6, z: -5.0, scale: 0.75, rotY: -0.8 },
+    { x: 2.2, y: 0.6, z: -5.0, scale: 0.75, rotY: -0.8 },
   ];
   const bottles = bottleData.map(d => {
     const b = createBottle(d.scale);
@@ -191,8 +191,8 @@
     // Particles drift up
     const pos = particles.geometry.attributes.position;
     for (let i = 0; i < pos.count; i++) {
-      pos.array[i*3+1] += 0.003;
-      if (pos.array[i*3+1] > 12) pos.array[i*3+1] = -12;
+      pos.array[i * 3 + 1] += 0.003;
+      if (pos.array[i * 3 + 1] > 12) pos.array[i * 3 + 1] = -12;
     }
     pos.needsUpdate = true;
 
@@ -217,10 +217,11 @@
     document.body.style.overflow = '';
     isRunning = false;
     cancelAnimationFrame(animFrame);
-    setTimeout(() => { try { renderer.dispose(); } catch {} }, 500);
+    setTimeout(() => { try { renderer.dispose(); } catch { } }, 500);
   }
 
   window.skipIntro = function () { clearTimeout(timer); dismiss(); };
+  window._skipIntroFn = function () { clearTimeout(timer); dismiss(); };
 
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
