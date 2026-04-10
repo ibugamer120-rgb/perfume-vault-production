@@ -124,6 +124,8 @@ async function renderHome() {
 
 // ── Liquid/fluid shader background ───────────────────────────────
 function initHeroShader() {
+  // Skip on mobile — too heavy
+  if (window.innerWidth < 768) return;
   const canvas = document.getElementById('hero-shader-canvas');
   if (!canvas) return;
   const gl = canvas.getContext('webgl');
@@ -194,6 +196,8 @@ function initHeroShader() {
 
 // ── 3D rotating perfume bottle on hero ───────────────────────────
 function initHeroBottle() {
+  // Skip on mobile or if Three.js not loaded yet
+  if (window.innerWidth < 768) return;
   const canvas = document.getElementById('hero-bottle-canvas');
   if (!canvas || typeof THREE === 'undefined') return;
 

@@ -7,10 +7,14 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 const connectDB = require('./config/db');
 const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
+
+// ── Compression (gzip) — must be first ───────────────────────────
+app.use(compression());
 
 // ── DB ────────────────────────────────────────────────────────────
 connectDB();
@@ -58,7 +62,19 @@ app.use('/api', rateLimit({
 
 // ── Static files ──────────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, '../client'), {
-  maxAge: process.env.NODE_ENV === 'production' ? '1d' : 0,
+  maxAge: process.env.NODE_ENV === 'production' ? '7d' : 0,
+  etag: true,
+  lastModified: true,
+  setHeaders: (res, filePath) => {
+    // Long cache for versioned assets (JS, CSS)
+    if (filePath.endsWith('.js') || filePath.endsWith('.css')) {
+      res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days
+    }
+    // No cache for HTML (always fresh)
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    }
+  }
 }));
 
 // ── API Routes ────────────────────────────────────────────────────
