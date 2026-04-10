@@ -93,7 +93,7 @@ async function renderHome() {
       <div class="about-grid">
         <div class="about-visual">
           <div class="about-img-wrap">
-            <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=700&q=80" alt="The Perfume Vault" loading="eager" onerror="this.style.display='none'" />
+            <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=700&q=80" alt="The Perfume Vault" loading="eager" onerror="this.style.background='linear-gradient(135deg,#111,#1a1a0a)';this.style.display='block';this.style.width='100%';this.style.height='100%'" />
             <div class="about-badge"><span class="about-badge-num">2024</span><span class="about-badge-text">Est.</span></div>
           </div>
         </div>

@@ -17,7 +17,10 @@ function toggleAuthModal() {
   if (!modal) return;
   const isOpen = modal.classList.toggle('open');
   document.body.classList.toggle('modal-open', isOpen);
-  if (isOpen) renderAuthModal();
+  if (isOpen) {
+    // Always re-render to get fresh auth state
+    setTimeout(renderAuthModal, 0);
+  }
 }
 
 function renderAuthModal() {

@@ -5,7 +5,9 @@ const ShopState = { cat: 'All', sort: 'newest', page: 1, search: '', debounce: n
 async function renderShop(params = {}) {
   // Read URL params
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('category')) { ShopState.cat = urlParams.get('category'); ShopState.page = 1; }
+  const catParam = urlParams.get('category');
+  if (catParam) { ShopState.cat = catParam; ShopState.page = 1; }
+  else if (!params.keepState) { ShopState.cat = 'All'; ShopState.page = 1; }
   if (params.search) { ShopState.search = params.search; }
 
   Router.setContent(`
@@ -17,7 +19,7 @@ async function renderShop(params = {}) {
         </div>
         <div class="filters-bar">
           <div class="category-pills" id="category-pills">
-            ${['All','Men','Women','Luxury'].map(c => `
+            ${['All', 'Men', 'Women', 'Luxury'].map(c => `
               <button class="pill ${ShopState.cat === c ? 'active' : ''}" onclick="shopFilter('${c}')">
                 ${c === 'Men' ? '<i class="fas fa-mars"></i>' : c === 'Women' ? '<i class="fas fa-venus"></i>' : c === 'Luxury' ? '<i class="fas fa-crown"></i>' : ''}
                 ${c}
@@ -29,11 +31,11 @@ async function renderShop(params = {}) {
               <i class="fas fa-search"></i>
             </div>
             <select id="sort-select" class="sort-select" onchange="shopSort(this.value)">
-              <option value="newest" ${ShopState.sort==='newest'?'selected':''}>Newest</option>
-              <option value="price-asc" ${ShopState.sort==='price-asc'?'selected':''}>Price: Low → High</option>
-              <option value="price-desc" ${ShopState.sort==='price-desc'?'selected':''}>Price: High → Low</option>
-              <option value="rating" ${ShopState.sort==='rating'?'selected':''}>Highest Rated</option>
-              <option value="popular" ${ShopState.sort==='popular'?'selected':''}>Most Popular</option>
+              <option value="newest" ${ShopState.sort === 'newest' ? 'selected' : ''}>Newest</option>
+              <option value="price-asc" ${ShopState.sort === 'price-asc' ? 'selected' : ''}>Price: Low → High</option>
+              <option value="price-desc" ${ShopState.sort === 'price-desc' ? 'selected' : ''}>Price: High → Low</option>
+              <option value="rating" ${ShopState.sort === 'rating' ? 'selected' : ''}>Highest Rated</option>
+              <option value="popular" ${ShopState.sort === 'popular' ? 'selected' : ''}>Most Popular</option>
             </select>
           </div>
         </div>
@@ -126,15 +128,15 @@ function renderPaginationShop(p) {
   const el = document.getElementById('pagination');
   if (!el || !p || p.pages <= 1) { if (el) el.innerHTML = ''; return; }
   let html = '';
-  if (ShopState.page > 1) html += `<button class="page-btn" onclick="shopPage(${ShopState.page-1})"><i class="fas fa-chevron-left"></i></button>`;
+  if (ShopState.page > 1) html += `<button class="page-btn" onclick="shopPage(${ShopState.page - 1})"><i class="fas fa-chevron-left"></i></button>`;
   for (let i = 1; i <= p.pages; i++) {
     if (i === 1 || i === p.pages || (i >= ShopState.page - 1 && i <= ShopState.page + 1))
-      html += `<button class="page-btn ${i===ShopState.page?'active':''}" onclick="shopPage(${i})">${i}</button>`;
+      html += `<button class="page-btn ${i === ShopState.page ? 'active' : ''}" onclick="shopPage(${i})">${i}</button>`;
     else if (i === ShopState.page - 2 || i === ShopState.page + 2)
       html += `<span class="page-btn" style="pointer-events:none;opacity:0.4">…</span>`;
   }
-  if (ShopState.page < p.pages) html += `<button class="page-btn" onclick="shopPage(${ShopState.page+1})"><i class="fas fa-chevron-right"></i></button>`;
+  if (ShopState.page < p.pages) html += `<button class="page-btn" onclick="shopPage(${ShopState.page + 1})"><i class="fas fa-chevron-right"></i></button>`;
   el.innerHTML = html;
 }
 
-function shopPage(n) { ShopState.page = n; loadShopProducts(); window.scrollTo({top:0,behavior:'smooth'}); }
+function shopPage(n) { ShopState.page = n; loadShopProducts(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
